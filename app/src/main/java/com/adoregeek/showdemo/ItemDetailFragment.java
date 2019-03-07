@@ -73,7 +73,12 @@ public class ItemDetailFragment extends Fragment {
         if (mItem != null) {
             recyclerView = rootView.findViewById(R.id.item_detail);
             recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4));
-            recyclerView.setAdapter(new GridViewAdapter(getActivity(), mItem.details));
+            recyclerView.setAdapter(new GridViewAdapter(getActivity(), mItem.details, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DummyContent.GoodItem goodItem= (DummyContent.GoodItem) v.getTag();
+                }
+            }));
 //            ((TextView) rootView.findViewById(R.id.item_detail)).setText(mItem.details);
         }
 
@@ -86,10 +91,13 @@ public class ItemDetailFragment extends Fragment {
         private final Context mParentActivity;
         private final List<DummyContent.GoodItem> mValues;
 
-        GridViewAdapter(Context parent, List<DummyContent.GoodItem> items) {
+        GridViewAdapter(Context parent, List<DummyContent.GoodItem> items, View.OnClickListener onClickListener) {
             mValues = items;
             mParentActivity = parent;
+            this.onClickListener=onClickListener;
         }
+
+        private View.OnClickListener onClickListener;
 
         @Override
         public GridViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -101,11 +109,19 @@ public class ItemDetailFragment extends Fragment {
         @Override
         public void onBindViewHolder(final GridViewAdapter.ViewHolder holder, int position) {
 
-            DummyContent.GoodItem goodItem = mValues.get(position);
-            ImageLoadUtil.load(holder.itemView.getContext(),goodItem.getGood_img(),holder.ivGoodImg);
-            holder.tvName.setText(goodItem.getGood_name()+"");
-            holder.tvNum.setText(goodItem.getGood_num()+"");
-            holder.tvSize.setText(goodItem.getGood_size()+"");
+            final DummyContent.GoodItem goodItem = mValues.get(position);
+            ImageLoadUtil.load(holder.itemView.getContext(), goodItem.getGood_img(), holder.ivGoodImg);
+            holder.tvName.setText(goodItem.getGood_name() + "");
+            holder.tvNum.setText(goodItem.getGood_num() + "");
+            holder.tvSize.setText(goodItem.getGood_size() + "");
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    v.setTag(goodItem);
+                    if(onClickListener!=null)
+                        onClickListener.onClick(v);
+                }
+            });
         }
 
         @Override

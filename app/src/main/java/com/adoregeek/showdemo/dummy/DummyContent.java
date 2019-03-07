@@ -1,6 +1,9 @@
 package com.adoregeek.showdemo.dummy;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,7 +79,7 @@ public class DummyContent {
         }
     }
 
-    public static class GoodItem {
+    public static class GoodItem implements Parcelable {
         /**
          * good_name : 测试商品
          * good_price : ¥200
@@ -138,5 +141,44 @@ public class DummyContent {
         public void setGood_img(String good_img) {
             this.good_img = good_img;
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.id);
+            dest.writeString(this.good_name);
+            dest.writeString(this.good_price);
+            dest.writeInt(this.good_num);
+            dest.writeString(this.good_size);
+            dest.writeString(this.good_img);
+        }
+
+        public GoodItem() {
+        }
+
+        protected GoodItem(Parcel in) {
+            this.id = in.readInt();
+            this.good_name = in.readString();
+            this.good_price = in.readString();
+            this.good_num = in.readInt();
+            this.good_size = in.readString();
+            this.good_img = in.readString();
+        }
+
+        public static final Parcelable.Creator<GoodItem> CREATOR = new Parcelable.Creator<GoodItem>() {
+            @Override
+            public GoodItem createFromParcel(Parcel source) {
+                return new GoodItem(source);
+            }
+
+            @Override
+            public GoodItem[] newArray(int size) {
+                return new GoodItem[size];
+            }
+        };
     }
 }
