@@ -1,15 +1,23 @@
 package com.adoregeek.showdemo;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.adoregeek.showdemo.dummy.DummyContent;
+import com.adoregeek.showdemo.util.ImageLoadUtil;
+
+import java.util.List;
 
 /**
  * A fragment representing a single Item detail screen.
@@ -54,6 +62,8 @@ public class ItemDetailFragment extends Fragment {
         }
     }
 
+    RecyclerView recyclerView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -61,9 +71,61 @@ public class ItemDetailFragment extends Fragment {
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.item_detail)).setText(mItem.details);
+            recyclerView = rootView.findViewById(R.id.item_detail);
+            recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4));
+            recyclerView.setAdapter(new GridViewAdapter(getActivity(), mItem.details));
+//            ((TextView) rootView.findViewById(R.id.item_detail)).setText(mItem.details);
         }
 
         return rootView;
+    }
+
+
+    public static class GridViewAdapter extends RecyclerView.Adapter<GridViewAdapter.ViewHolder> {
+
+        private final Context mParentActivity;
+        private final List<DummyContent.GoodItem> mValues;
+
+        GridViewAdapter(Context parent, List<DummyContent.GoodItem> items) {
+            mValues = items;
+            mParentActivity = parent;
+        }
+
+        @Override
+        public GridViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_detail_content, parent, false);
+            return new GridViewAdapter.ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(final GridViewAdapter.ViewHolder holder, int position) {
+
+            DummyContent.GoodItem goodItem = mValues.get(position);
+            ImageLoadUtil.load(holder.itemView.getContext(),goodItem.getGood_img(),holder.ivGoodImg);
+            holder.tvName.setText(goodItem.getGood_name()+"");
+            holder.tvNum.setText(goodItem.getGood_num()+"");
+            holder.tvSize.setText(goodItem.getGood_size()+"");
+        }
+
+        @Override
+        public int getItemCount() {
+            return mValues.size();
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+            final ImageView ivGoodImg;
+            final TextView tvName;
+            final TextView tvNum;
+            final TextView tvSize;
+
+            ViewHolder(View view) {
+                super(view);
+                ivGoodImg = (ImageView) view.findViewById(R.id.iv_good_img);
+                tvName = (TextView) view.findViewById(R.id.tv_name);
+                tvNum = (TextView) view.findViewById(R.id.tv_num);
+                tvSize = (TextView) view.findViewById(R.id.tv_size);
+            }
+        }
     }
 }
