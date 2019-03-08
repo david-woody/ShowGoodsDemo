@@ -76,7 +76,10 @@ public class ItemDetailFragment extends Fragment {
             recyclerView.setAdapter(new GridViewAdapter(getActivity(), mItem.details, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DummyContent.GoodItem goodItem= (DummyContent.GoodItem) v.getTag();
+                    DummyContent.GoodItem goodItem = (DummyContent.GoodItem) v.getTag();
+                    Intent intent = new Intent(getActivity(), ItemDetailInfoActivity.class);
+                    intent.putExtra("data", goodItem);
+                    startActivity(intent);
                 }
             }));
 //            ((TextView) rootView.findViewById(R.id.item_detail)).setText(mItem.details);
@@ -94,7 +97,7 @@ public class ItemDetailFragment extends Fragment {
         GridViewAdapter(Context parent, List<DummyContent.GoodItem> items, View.OnClickListener onClickListener) {
             mValues = items;
             mParentActivity = parent;
-            this.onClickListener=onClickListener;
+            this.onClickListener = onClickListener;
         }
 
         private View.OnClickListener onClickListener;
@@ -118,7 +121,7 @@ public class ItemDetailFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     v.setTag(goodItem);
-                    if(onClickListener!=null)
+                    if (onClickListener != null)
                         onClickListener.onClick(v);
                 }
             });
